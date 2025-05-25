@@ -1,0 +1,90 @@
+---
+title: "Maria Talita Carvalho Franco"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+options(warn = -1)
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+
+library(WDI)
+library(ggplot2) 
+library(tidyverse)
+options(scipen = 999)
+
+#BASE DE DADOS
+# 1. Dados em painel
+dadospainel <- WDI(country = c("USA", "FRA", "DEU", "AUT"), 
+indicator = "SH.XPD.CHEX.GD.ZS", 
+start = 2015, end = 2024)
+
+# 2. Corte transversal (2020)
+dadostransversal <- WDI(country = c("USA", "FRA", "DEU", "AUT"), 
+indicator = "SH.XPD.CHEX.GD.ZS", 
+start = 2020, end = 2020)
+ 
+# 3. Série temporal – Brasil 
+dadosbrasil <- WDI(country = "BR", 
+indicator = "SH.XPD.CHEX.GD.ZS", 
+start = 2015, end = 2024 )
+```
+
+## **Gasto público em saúde**
+
+A variável escolhida foi “Gasto público em saúde (% do PIB)”, código `SH.XPD.CHEX.GD.ZS`. Ela indica quanto do Produto Interno Bruto (PIB) os governos investem diretamente na área da saúde. Essa métrica permite avaliar o grau de prioridade que cada país dá ao setor, especialmente em períodos críticos como o da pandemia de COVID-19.\
+
+**Dados em Painel: Países com maiores gastos (2015–2024)**
+
+Este gráfico compara a evolução do gasto público em saúde (% do PIB) entre os quatro países com os maiores percentuais: **Estados Unidos, França, Alemanha e Áustria**, ao longo do período de **2015 a 2024**. Ele permite visualizar tendências, identificar padrões e observar se algum país aumentou ou reduziu seus investimentos relativos ao PIB com o passar dos anos.
+
+```{r}
+
+ggplot(dadospainel, aes(x = year, y = SH.XPD.CHEX.GD.ZS, color = country)) +
+  geom_line(linewidth = 1) +
+  labs(title = "Gasto Público em Saúde (% do PIB): 4 Países (2015–2024)",
+    x = "Ano", y = "Gasto Público em Saúde (% PIB)", color = "País"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+**Corte transversal:** **Países com maiores gastos (2020)\
+**
+
+O gráfico a seguir mostra um corte transversal, ou seja, uma comparação entre os **mesmos 4 países** (EUA, França, Alemanha e Áustria), porém considerando **apenas o ano de 2020**. Este tipo de gráfico ajuda a analisar como cada país se comportou em um mesmo momento no tempo — no caso, durante a pandemia da COVID-19 —, evidenciando diferenças no nível de prioridade dado à saúde naquele ano específico.
+
+```{r}
+
+ggplot(dadostransversal, aes(x = country, y = SH.XPD.CHEX.GD.ZS, fill = country)) +
+  geom_col() +
+  labs(
+    title = "Gasto Público em Saúde (% do PIB) — Corte Transversal (2020)",
+    x = "País", y = "Gasto Público em Saúde (% PIB)"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+\
+**Série Temporal: Brasil (2015–2024)**
+
+Este gráfico mostra a evolução do gasto público em saúde (% do PIB) **no Brasil**, entre os anos de **2015 e 2024**. Através da série temporal, é possível perceber se houve aumentos ou quedas nos investimentos públicos em saúde ao longo dos anos, além de identificar possíveis impactos de eventos importantes, como a pandemia.
+
+```{r}
+
+ggplot(dadosbrasil, aes(x = year, y = SH.XPD.CHEX.GD.ZS)) +
+  geom_line(color = "darkgreen", linewidth = 1) +
+  geom_point(color = "darkgreen", linewidth = 2) +
+  labs(
+    title = "Gasto Público em Saúde (% do PIB) — Brasil (2015–2024)",
+    x = "Ano", y = "Gasto Público em Saúde (% PIB)"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
